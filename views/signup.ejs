@@ -82,16 +82,17 @@
                   $window.location.href = '/login';
                   alert("Account created successfully. You can login now!");
                 } else if(response.data.msg=="exists"){
-                  alert("already exists ");
+                    $window.location.href = '/login';
+                  alert("Username already exists!");
                   $scope.uname = "";
                   $scope.pwd = "";
-                  $scope.email = ""
+                  $scope.email = "";
                 }
 
                 else {
                   $scope.uname = "";
                   $scope.pwd = "";
-                  $scope.email = ""
+                  $scope.email = "";
 
                 }
               },
