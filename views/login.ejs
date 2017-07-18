@@ -30,6 +30,7 @@
 </div>
   <div class="col-md-4">
 <br><br>
+
 <div class="form-group">
 <label for="username">Username</label>
 <input type="text" id="username" ng-model="username"class="form-control" placeholder="Username" >
@@ -60,7 +61,7 @@ $scope.login=function(username,password){
   else{
 
 
-    $http.post('/access',JSON.stringify({username:username,password:password}))
+    $http.post('/access',JSON.stringify({username:username,password:password}) )
        .then(
            function(response){
              // success callback
@@ -78,7 +79,7 @@ $scope.login=function(username,password){
              // failure callback
            }
         );
-  }
+  } //end of else
 }
 });
 

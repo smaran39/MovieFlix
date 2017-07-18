@@ -4,11 +4,12 @@
 <head>
   <meta charset="utf-8">
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
   <title>Sign up</title>
 </head>
 
-<body>
+<body ng-app="signup">
 
   <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -23,26 +24,30 @@
       </ul>
     </div>
   </nav>
+  <!-- container div -->
 
-  <div class="container">
+  <div class="container" ng-controller="signupCtrl">
     <div class="row">
       <div class="col-md-4">
 
       </div>
       <div class="col-md-4">
         <br><br>
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" class=" form-control" id="username" placeholder="Username">
-          <br>
-          <label for="password">Password</label>
-          <input type="password" id="password" class="form-control" placeholder="password">
-          <br>
-          <label for="email_address">Email Address</label>
-          <input type="email" id="email_address" class="form-control" name="email" placeholder="enter your email address">
-          <br>
-          <button class=" btn btn-success btn-md">Create an account</button>
-        </div>
+
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input name="username" ng-model="uname" type="text" class=" form-control" id="username" placeholder="Username">
+
+            <br>
+            <label for="password">Password</label>
+            <input ng-model="pwd" type="password" id="password" class="form-control" placeholder="password">
+
+            <br>
+            <label for="email_address">Email Address</label>
+            <input ng-model="email" type="text" id="email_address" class="form-control" name="email" placeholder="enter your email address">
+            <br> <!--change Email type here -->
+            <button ng-click="signup(uname,pwd,email)" class=" btn btn-success btn-md">Create an account</button>
+          </div>
 
 
 
@@ -52,6 +57,55 @@
       </div>
     </div>
   </div>
+  <!-- end of container div -->
+
+
+  <script>
+    var signup = angular.module("signup", []);
+    signup.controller('signupCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
+
+      $scope.signup = function(uname, pwd, email) {
+        if(uname === undefined || pwd === undefined || email === undefined) {
+          alert('no signup');
+        }else {
+
+          $http.post('/signedup', JSON.stringify({
+              username: uname,
+              password: pwd,
+              email: email
+            }))
+            .then(
+              function(response) {
+                // success callback
+                //console.log(response);
+                if (response.data.msg == "Account created successfully!") {
+                  $window.location.href = '/login';
+                  alert("Account created successfully. You can login now!");
+                } else if(response.data.msg=="exists"){
+                  alert("already exists ");
+                  $scope.uname = "";
+                  $scope.pwd = "";
+                  $scope.email = ""
+                }
+
+                else {
+                  $scope.uname = "";
+                  $scope.pwd = "";
+                  $scope.email = ""
+
+                }
+              },
+              function(response) {
+                // failure callback
+              }
+            ); //end of then
+        }//end of else loop
+
+      }; //end of signup function
+
+    }]); // end of controller
+  </script>
+
 </body>
 
 </html>

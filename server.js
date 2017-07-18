@@ -1,4 +1,17 @@
 var express=require('express');
+var mongoose = require('mongoose');
+
+mongoose.connect('mongodb://smaran39:mLab39@ds163232.mlab.com:63232/movieflix');
+
+var Schema = mongoose.Schema;
+var Users=new Schema({
+  name :{type:String,unique:true},
+  pass:{type:String},
+
+
+
+});
+var User=mongoose.model('userdetails',Users);
 var path=require('path');
 var bodyParser=require('body-parser');
 var session = require('express-session');
@@ -56,12 +69,45 @@ app.set('view engine','ejs');
 app.get("/",function(req,res){
   res.render("index",{user:req.user});
 });
+
+//for login functionality
 app.post("/access",passport.authenticate('local', { failureRedirect: '/login' }),function(req,res){
 //console.log(req.body);
 res.json({msg:"success"});
 
   res.end();
 });
+//for signup functionality
+app.post('/signedup',function (req,res) {
+  console.log(req.body);
+
+//checking if username already exists or not
+
+
+
+//mongoose code
+  var user = User({
+    name:req.body.username,
+    pass:req.body.password,
+
+  });
+  user.save(function(err){
+    console.log(err);
+    if(err){
+    res.json({msg:"exists"});
+    res.end();
+  }
+    else {
+      res.json({msg:"Account created successfully!"});
+      res.end();
+    }
+  }); //end of mongoose code
+
+
+
+});
+
+
 app.get("/login",function(req,res){
   res.render("login");
 });
