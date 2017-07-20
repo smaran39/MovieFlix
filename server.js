@@ -11,11 +11,35 @@ var Users = new Schema({
   },
   pass: {
     type: String
-  },
-
-
-
+  }
 });
+var movies=new Schema({
+  title: String,
+   year :Number,
+   rated: String,
+   released: Date,
+   runtime: String,
+   genre : String,
+   director: String,
+   writer:String,
+   actors: String,
+   plot : String,
+   language: String,
+   country: String,
+   awards: String,
+   poster: String,
+   metaScore: Number,
+   imdbRating: Number,
+   imdbVotes: Number,
+   imdbId: String,
+   type: String
+});
+var movieModel = mongoose.model('moviecollection', movies);
+
+
+
+
+
 var User = mongoose.model('userdetails', Users);
 var path = require('path');
 var bodyParser = require('body-parser');
@@ -38,27 +62,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(function(username, password, done) {
   console.log(username);
-  User.findOne({name: username }, function(err, user) {
+  User.findOne({name: username,pass:password }, function(err, user) {
     console.log(user);
      if (err) { return done(err); }
-     if (!user) {
+     if (!user || !user.pass) {
        return done(null, false, { message: 'Incorrect username.' });
      }
      return done(null, {username:user.name});
    }); //end of findOne
 
-/*
-  User.find({name: username}, function(err, user) {
-    if (err) {
-      throw err;
-    } else {
-      console.log(user);
-      if (user.length == 0) {
-        return done(null,false,{message:})
-      }
-    }
-
-  });*/
 
 })); //passport.use() ends here
 
@@ -75,12 +87,21 @@ app.use(bodyParser.urlencoded({
 }));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
+
+//home page
 app.get("/", function(req, res) {
-  console.log(req.user);
+
+
+movieModel.find({},function(err,data){
+  if(err) console.log(err);
+  //console.log(data);
+
+});
   res.render("index", {
     user: req.user
   });
-});
+
+}); // end of home page
 
 //for login functionality
 app.post("/access", passport.authenticate('local', {
@@ -94,13 +115,25 @@ app.post("/access", passport.authenticate('local', {
   res.end();
 });
 
+app.get('/getmovies',function(req,res) {
+
+movieModel.find({},function (err,data) {
+  if(err){
+    console.log(err);
+  }else {
+    //console.log(data);
+    res.send(data);
+  }
+  res.end();
+});
+
+
+});
+
+
 //for signup functionality
 app.post('/signedup', function(req, res) {
   console.log(req.body);
-
-  //checking if username already exists or not
-
-
 
 
     var user = User({
@@ -109,7 +142,7 @@ app.post('/signedup', function(req, res) {
 
     });
     user.save(function(err){
-      console.log(err);
+      //console.log(err);
       if(err){
       res.json({msg:"exists"});
       res.end();
@@ -119,8 +152,6 @@ app.post('/signedup', function(req, res) {
         res.end();
       }
     });
-
-
 
 }); // end of  '/signedup' code
 

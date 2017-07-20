@@ -6,6 +6,7 @@
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+
   <title>MovieFlix</title>
 </head>
 
@@ -27,19 +28,6 @@
     </nav>
     <h1>This is Home page</h1>
 
-    <nav aria-label="Page navigation example">
-      <ul class="pagination justify-content-end">
-        <li class="page-item disabled">
-          <a class="page-link" href="#" tabindex="-1">Previous</a>
-        </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item">
-          <a class="page-link" href="#">Next</a>
-        </li>
-      </ul>
-    </nav>
 
     <% } else { %>
       <div ng-controller="mainCTRL">
@@ -64,8 +52,16 @@
         </div>
 
       </nav>
-    </div>
-    <h3> <%=user.username %> is logged in </div>
+
+      <div  ng-repeat="data in moviedata">
+        {{data.title}}
+      </div>
+
+
+    </div> <!-- End of Controller -->
+
+    <h3> <%=user.username %> is logged in </h3>
+
       <% } %>
 
 
@@ -82,7 +78,19 @@ $scope.logout=function(){
 
   });
 }
+
+$http.get('/getmovies').then(function(res) {
+  console.log(res);
+
+$scope.moviedata = res.data;
+
+},
+function (res) {
+console.log('failed');
 });
+
+
+}); // end of controller
 
 
 </script>
