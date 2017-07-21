@@ -169,7 +169,7 @@ app.get('/logout', function(req, res) {
   });
   res.end();
 });
-app.use(express.static(path.join(__dirname, 'client')));
+app.use(express.static(path.join(__dirname, '/client')));
 app.listen(3000, function(req, res) {
   console.log('listening to the port 3000');
 });
